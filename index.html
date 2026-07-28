@@ -49,7 +49,10 @@ h1 em{font-style:italic;color:var(--accent)}
 .searchbar input::placeholder{color:var(--ink-soft)}
 
 /* ── filters ──────────────────────────────────────────── */
-.filters{display:flex;flex-wrap:wrap;gap:9px;padding:26px 0 6px}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:26px 0 6px}
+#parts{padding-top:10px}
+.filters > .label{width:74px;flex:none}
+.filters .chip.part{border-style:dashed}      /* second axis reads as a different kind of filter */
 .chip{
   font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.13em;
   background:none;border:1px solid var(--rule);color:var(--ink);
@@ -121,7 +124,8 @@ h1 em{font-style:italic;color:var(--accent)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{border:1px solid var(--rule);padding:4px 9px;font-size:11px;color:var(--ink);background:var(--paper-2)}
 .tag.more{border-color:transparent;background:none;color:var(--ink-soft)}
-.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:4px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:4px}
+.card-foot .label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-foot .g{color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:.14em}
 .card-foot .g::before{content:"◆ ";font-size:8px;vertical-align:1px}
 
@@ -145,7 +149,8 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 .m-head h2{font-family:var(--serif);font-size:44px;font-weight:400;line-height:1}
 .m-head .formula{font-size:12px;color:var(--ink-soft)}
 .m-blurb{font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin:10px 0 14px;max-width:62ch}
-.m-source{display:inline-block;margin-bottom:18px;font-size:11px;letter-spacing:.06em;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
+.m-meta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;min-height:14px}
+.m-source{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
 .m-source:hover{border-color:var(--accent)}
 .m-source[hidden]{display:none}
 .block{border:1px solid var(--rule);background:var(--paper-2);margin-top:22px}
@@ -192,6 +197,7 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 </div>
 
 <nav class="filters" id="filters"></nav>
+<nav class="filters" id="parts"></nav>
 <div id="dossier"></div>
 <main class="grid" id="grid"></main>
 
@@ -212,7 +218,10 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
         <span class="formula" id="m-formula"></span>
       </div>
       <p class="m-blurb" id="m-blurb"></p>
-      <a class="m-source" id="m-source" target="_blank" rel="noopener noreferrer" hidden></a>
+      <div class="m-meta">
+        <span class="label" id="m-parts"></span>
+        <a class="m-source" id="m-source" target="_blank" rel="noopener noreferrer" hidden></a>
+      </div>
       <div class="tags" id="m-tags"></div>
 
       <div class="block">
@@ -243,7 +252,7 @@ const HUES = ['#D9CFC0','#C9C9C4','#CBD3D2','#D2D6C8','#D6CCC4','#C6BFC9','#E0D3
 GROUPS.forEach((g, i) => g.hue = HUES[i % HUES.length]);
 
 const $ = s => document.querySelector(s);
-let filter = 'all', query = '', view = ENTRIES;
+let filter = 'all', part = 'all', query = '', view = ENTRIES;
 
 // ── uploads ──────────────────────────────────────────────────────
 // With images/ linked, a dropped screenshot is written straight into the
@@ -373,10 +382,12 @@ function remember(id, rec){
 
 const refresh = () => { renderGrid(); if ($('#modal').open) open(cur); };
 
+const partsOf = e => e.parts || [];
 const matches = e =>
   (filter === 'all' || e.group === filter) &&
-  (!query || (e.title + ' ' + e.formula + ' ' + e.blurb + ' ' + e.keywords.join(' ') + ' ' + byId[e.group].name)
-    .toLowerCase().includes(query));
+  (part === 'all' || partsOf(e).includes(part)) &&
+  (!query || [e.title, e.formula, e.blurb, e.keywords.join(' '), partsOf(e).join(' '), byId[e.group].name]
+    .join(' ').toLowerCase().includes(query));
 
 const placeholder = e => `<div class="ph"><b>${e.title}</b><i>drop a screenshot here</i></div>`;
 const thumb = e => {
@@ -393,6 +404,17 @@ function renderFilters(){
      ...GROUPS.map(g => ({id:g.id, name:g.name, n:counts[g.id] || 0}))
               .filter(f => f.n || f.id === filter)]   // a style shows up once you have one
       .map(f => `<button class="chip" aria-pressed="${filter === f.id}" data-f="${f.id}">${f.name}<span>${f.n}</span></button>`)
+      .join('');
+}
+
+function renderParts(){
+  const counts = {};
+  ENTRIES.forEach(e => partsOf(e).forEach(p => counts[p] = (counts[p] || 0) + 1));
+  const used = PARTS.filter(p => counts[p] || p === part);
+  $('#parts').hidden = !used.length;
+  $('#parts').innerHTML = '<span class="label">Component</span>' +
+    [{id:'all', name:'Any', n:ENTRIES.length}, ...used.map(p => ({id:p, name:p, n:counts[p] || 0}))]
+      .map(f => `<button class="chip part" aria-pressed="${part === f.id}" data-p="${f.id}">${f.name}<span>${f.n}</span></button>`)
       .join('');
 }
 
@@ -429,6 +451,7 @@ function renderGrid(){
         </div>
         <div class="card-foot">
           <span class="g">${g.name}</span>
+          <span class="label">${partsOf(e).join(' · ')}</span>
           <span class="label">${String(i + 1).padStart(2, '0')} / ${String(view.length).padStart(2, '0')}</span>
         </div>
       </div>
@@ -438,7 +461,7 @@ function renderGrid(){
     : `<p class="empty">Empty library.<br><br>Give a screenshot to Claude Code in this folder<br>and say “add this to the library”.</p>`;
 }
 
-const render = () => { renderFilters(); renderDossier(); renderGrid(); };
+const render = () => { renderFilters(); renderParts(); renderDossier(); renderGrid(); };
 
 // ── modal ────────────────────────────────────────────────
 let cur = 0;
@@ -455,6 +478,7 @@ function open(i){
   $('#m-title').textContent = e.title;
   $('#m-formula').textContent = e.formula;
   $('#m-blurb').textContent = e.blurb;
+  $('#m-parts').textContent = partsOf(e).join(' · ');
   $('#m-source').hidden = !src;
   if (src) { $('#m-source').href = src; $('#m-source').textContent = '↗ ' + src.replace(/^https?:\/\/(www\.)?/, ''); }
   $('#m-tags').innerHTML = e.keywords.map(k => `<span class="tag">${k}</span>`).join('');
@@ -476,6 +500,10 @@ async function copy(text, btn){
 $('#filters').onclick = ev => {
   const b = ev.target.closest('[data-f]');
   if (b) location.hash = b.dataset.f;
+};
+$('#parts').onclick = ev => {
+  const b = ev.target.closest('[data-p]');
+  if (b) { part = b.dataset.p; renderParts(); renderGrid(); }
 };
 $('#grid').onclick = ev => {
   const c = ev.target.closest('.card');

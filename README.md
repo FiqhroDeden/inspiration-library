@@ -33,6 +33,17 @@ IndexedDB. **Save to disk** exports it so you can drop it into `images/` by hand
 The folder link is remembered, though the browser re-asks for write permission on the
 first upload of each session.
 
+## Two filter axes
+
+**Style** (the chip row) is *how it looks* — the `group`. **Component** (the dashed row
+below it) is *which piece of a site it is* — the `parts` array: `full page`, `navbar`,
+`hero`, `features`, `gallery`, `testimonials`, `pricing`, `cta`, `contact`, `footer`,
+`auth`, `dashboard`. They combine, so "colour-block heroes" is two clicks.
+
+An entry lists every section visible in its screenshot. A full-page capture is just
+`['full page']`. To use a term that isn't on the list, add it to `PARTS` in `library.js`
+first — `check.mjs` rejects anything else.
+
 ## Recording where a design came from
 
 Open a card and hit **Add source** to store the URL. It shows under the title as a link.

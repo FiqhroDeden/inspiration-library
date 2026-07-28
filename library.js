@@ -3,6 +3,13 @@
 // `image` and `source` are optional — without an image the card draws a placeholder,
 // and both can also be set from inside the app.
 
+// What part of a site a reference covers. An entry may list several.
+// Add a term here before using it — check.mjs rejects anything off this list.
+const PARTS = [
+  'full page', 'navbar', 'hero', 'features', 'gallery', 'testimonials',
+  'pricing', 'cta', 'contact', 'footer', 'auth', 'dashboard',
+];
+
 const GROUPS = [
   {
     id: 'print-tech-paper',
@@ -156,6 +163,7 @@ const ENTRIES = [
     id: 'havena',
     group: 'colour-block-collage',
     image: 'images/havena.png',
+    parts: ['navbar', 'hero'],
     title: 'Havena',
     formula: 'hospitality × colour-block poster',
     blurb: 'Flat wine ground, orange sparkles stuck over the type, and a lavender booking bar dropped straight across the hero.',

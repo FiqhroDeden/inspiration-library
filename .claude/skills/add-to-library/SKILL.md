@@ -21,6 +21,7 @@ Append to the `ENTRIES` array in `library.js`, grouped with its style neighbours
   group: 'existing-group-id',    // must be a GROUPS id — see "New group" below
   image: 'images/kebab-slug.png',// omit if the file isn't on disk
   source: 'https://…',           // where the design lives — see below
+  parts: ['hero'],               // what the screenshot covers — see below
   title: 'Short Name',
   formula: 'subject × treatment',// see below — the order is fixed
   blurb: 'One sentence naming the move that makes it work.',
@@ -46,6 +47,21 @@ render. Lowercase except for proper nouns and terms of art (`Atkinson dither`,
 
 If both halves sound like techniques, you have not identified the subject yet.
 Ask what the page is selling — that is the left half.
+
+### parts — what the screenshot actually covers
+
+Required, at least one, drawn only from the `PARTS` list at the top of `library.js`:
+
+`full page` · `navbar` · `hero` · `features` · `gallery` · `testimonials` ·
+`pricing` · `cta` · `contact` · `footer` · `auth` · `dashboard`
+
+List every section genuinely visible in the image, not the whole site it came from.
+A hero crop that includes the nav bar is `['navbar', 'hero']`. A full-page capture is
+`['full page']` on its own — don't also enumerate its sections. If the design needs a
+term that isn't on the list, add it to `PARTS` first; `check.mjs` rejects anything else.
+
+This is the second filter axis, independent of `group`: style is *how it looks*,
+parts is *which piece of a site it is*.
 
 ### keywords — 4 to 6 concrete visual traits
 
@@ -139,6 +155,7 @@ Screenshot: a meditation site, blocky 3D mountain landscape, serif headline, whi
 {
   id: 'stillness',
   group: 'voxel-dimensional',
+  parts: ['navbar', 'hero'],
   title: 'Stillness',
   formula: 'meditation × voxel 3D',
   blurb: 'The meditation landscape is built from blocks — digital material, calm subject.',
