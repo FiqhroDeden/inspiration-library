@@ -11,6 +11,26 @@ Look at the screenshot before writing anything. Every field must be traceable to
 something visible in it. If you can't point at the pixels that justify a keyword,
 it doesn't go in.
 
+## First: get the source URL
+
+However the image arrived — pasted into chat, grabbed off the clipboard, or already a
+file on disk — **you need the source URL before you write anything to `library.js`.**
+
+1. URL given in the message → use it verbatim.
+2. Address bar visible in the screenshot **and every character legible** → read it off.
+3. Otherwise → **ask the user for the link, and wait for the answer.**
+
+Ask before you edit the file, not after. Adding the entry and then asking is the wrong
+order — that is the habit this step exists to prevent.
+
+Never invent a URL. Do not reconstruct one from a brand name, a logo, or a wordmark;
+`Havena` does not license you to write `havena.com`. If you can see an address bar but
+cannot resolve every character, you do not have the URL — ask.
+
+**If the user says there is no source** — their own work, a concept piece, an image with
+no page behind it — omit `source` and add the entry. That is a complete answer. Take it
+and carry on; do not ask again or hold the entry back.
+
 ## The contract
 
 Append to the `ENTRIES` array in `library.js`, grouped with its style neighbours:
@@ -20,7 +40,7 @@ Append to the `ENTRIES` array in `library.js`, grouped with its style neighbours
   id: 'kebab-slug',              // unique across ENTRIES
   group: 'existing-group-id',    // must be a GROUPS id — see "New group" below
   image: 'images/kebab-slug.png',// omit if the file isn't on disk
-  source: 'https://…',           // where the design lives — see below
+  source: 'https://…',           // required unless the user said there is none
   parts: ['hero'],               // what the screenshot covers — see below
   title: 'Short Name',
   formula: 'subject × treatment',// see below — the order is fixed
@@ -106,18 +126,10 @@ and `vocabulary`: 6–8 `[term, definition]` pairs of the real names for the tec
 plain language. This glossary is the point of the app; don't pad it with generic
 design words.
 
-### source — always try to capture it
+### source
 
-The URL the design lives at. This is the field the user cares most about not losing,
-so do not skip it:
-
-- given a URL, use it verbatim
-- given a screenshot with a visible address bar, read the URL off it
-- otherwise **ask the user for the link** before finishing
-
-Only omit `source` if the user says they don't have one. If you read it from an
-address bar and can't make out every character, ask rather than guess — a wrong
-URL is worse than none.
+The URL the design lives at — the field the user most cares about not losing.
+Resolved before you start writing; see **First: get the source URL** above.
 
 ## The screenshot file
 
@@ -146,6 +158,9 @@ node check.mjs
 
 Must print `ok — N groups, M entries`. Fix anything it reports before you're done.
 Then tell the user the title, the group, and the one keyword that decided the group.
+
+If the entry went in without a `source` because the user said there wasn't one, say so
+in that sentence, so it reads as a decision rather than an oversight.
 
 ## Worked example
 
