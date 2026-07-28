@@ -430,7 +430,9 @@ function renderGrid(){
         </div>
       </div>
     </button>`;
-  }).join('') : `<p class="empty">Nothing matches “${query}”.</p>`;
+  }).join('') : ENTRIES.length
+    ? `<p class="empty">Nothing matches “${query}”.</p>`
+    : `<p class="empty">Empty library.<br><br>Give a screenshot to Claude Code in this folder<br>and say “add this to the library”.</p>`;
 }
 
 const render = () => { renderFilters(); renderDossier(); renderGrid(); };

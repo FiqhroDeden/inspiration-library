@@ -151,15 +151,4 @@ const GROUPS = [
 ];
 
 const ENTRIES = [
-  // ── Colour-Block Collage ──────────────────────────────────────────
-  {
-    id: 'havena',
-    group: 'colour-block-collage',
-    title: 'Havena',
-    formula: 'hospitality × sticker collage',
-    blurb: 'Every section changes ground colour and every photo is pasted on at a different size — the page never once sits still.',
-    keywords: ['wine and acid-yellow colour blocking', 'scalloped wave section dividers', 'overlapping photo collage clusters', 'heavy condensed uppercase headlines', 'four-point sparkle stickers', 'lime pill buttons with arrows'],
-    imagePrompt: '[SUBJECT: a Mediterranean villa courtyard with a turquoise pool, cypress trees and cream canvas parasols] photographed in high Mediterranean sun, deeply saturated colour with warm terracotta and ochre stone set against turquoise water and dense green foliage, strong contrast with rich warm shadows, vintage travel-poster colour grade pushing magenta into the shadow tones, tight crop with the architecture filling the frame and no empty sky, no haze, no pastel wash, no muted or desaturated treatment',
-    brief: 'Build a landing page for a luxury resort. The page is a stack of full-bleed bands that alternate ground colour — wine (#6E1338), acid yellow (#F3C61B), wine, lime (#D2E75E) — with a deep plum footer (#3A1040); every band change is separated by a scalloped wave edge cut as an SVG path, never a straight rule. Headlines are a heavy condensed uppercase sans at 48px with tight leading, always ending in a full stop, and always centred; body is a small warm-cream sans at 15px. The logo is an italic script wordmark, the one soft shape on the page. Each section is a collage: four to seven photographs at deliberately unequal sizes, rounded 12px, overlapping by 20–40px and rotated no more than 2 degrees, each with a small uppercase caption pinned to its lower-left. Scatter four-point sparkle glyphs and one circular rosette seal badge over the layout as stickers, including over photo edges. Buttons are lime or yellow pills with a trailing arrow and a hard 4px offset shadow in a darker tone — zero blur on every shadow on the page. Overlay the hero with a floating booking bar: rounded, wine-on-wine, with hairline field dividers. Nothing on this page may be neutral grey, and no section may share its ground colour with the one above it.',
-  },
 ];
