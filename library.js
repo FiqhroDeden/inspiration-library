@@ -155,6 +155,7 @@ const ENTRIES = [
   {
     id: 'havena',
     group: 'colour-block-collage',
+    image: 'images/havena.png',
     title: 'Havena',
     formula: 'hospitality × colour-block poster',
     blurb: 'Flat wine ground, orange sparkles stuck over the type, and a lavender booking bar dropped straight across the hero.',
