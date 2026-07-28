@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspiration Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2ECE3;
+  --paper-2:#EAE2D6;
+  --ink:#1B1712;
+  --ink-soft:#6B6156;
+  --rule:#CFC4B4;
+  --accent:#C4471F;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--mono);
+  font-size:13px;line-height:1.6;padding:0 40px 120px;
+}
+/* paper grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+::selection{background:var(--accent);color:var(--paper)}
+
+.label{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-soft)}
+
+/* ── masthead ─────────────────────────────────────────── */
+header{padding:56px 0 22px;border-bottom:1px solid var(--ink);display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+h1{font-family:var(--serif);font-size:clamp(38px,6vw,68px);font-weight:400;line-height:.95;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--accent)}
+.masthead-meta{text-align:right;max-width:340px}
+.masthead-meta p{font-size:12px;color:var(--ink-soft);line-height:1.5}
+
+/* ── search ───────────────────────────────────────────── */
+.searchbar{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.searchbar input{
+  flex:1;background:none;border:0;outline:0;font-family:var(--mono);font-size:13px;color:var(--ink);
+}
+.searchbar input::placeholder{color:var(--ink-soft)}
+
+/* ── filters ──────────────────────────────────────────── */
+.filters{display:flex;flex-wrap:wrap;gap:9px;padding:26px 0 6px}
+.chip{
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.13em;
+  background:none;border:1px solid var(--rule);color:var(--ink);
+  padding:9px 15px;cursor:pointer;display:inline-flex;gap:10px;align-items:center;
+  transition:background .12s,border-color .12s,color .12s;
+}
+.chip:hover{border-color:var(--ink)}
+.chip span{color:var(--accent);font-size:10px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip[aria-pressed="true"] span{color:var(--paper-2);opacity:.7}
+
+/* ── group dossier ────────────────────────────────────── */
+.dossier{border:1px solid var(--ink);margin:28px 0 6px;padding:30px 34px;background:var(--paper-2)}
+.dossier h2{font-family:var(--serif);font-size:34px;font-weight:400;line-height:1.05}
+.dossier .tagline{color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.16em;margin-top:6px}
+.dossier-cols{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:24px}
+.dossier-cols h3{margin-bottom:7px}
+.dossier-cols p{font-size:13px;line-height:1.7;max-width:56ch}
+.vocab{margin-top:26px;border-top:1px solid var(--rule);padding-top:18px}
+.vocab dl{display:grid;grid-template-columns:190px 1fr;gap:7px 20px;margin-top:12px}
+.vocab dt{color:var(--accent);font-weight:500}
+.vocab dd{color:var(--ink-soft)}
+
+/* ── grid ─────────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px;padding-top:34px}
+.card{
+  border:1px solid var(--rule);background:var(--paper);cursor:pointer;text-align:left;
+  font:inherit;color:inherit;padding:0;display:flex;flex-direction:column;
+  transition:border-color .14s,transform .14s;
+  animation:rise .5s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card:hover{border-color:var(--ink);transform:translateY(-3px)}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.thumb{aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--rule);position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{
+  position:absolute;inset:0;display:grid;place-items:center;
+  background-color:var(--ph,var(--paper-2));
+  background-image:radial-gradient(circle at center,rgba(27,23,18,.34) 1.1px,transparent 1.2px);
+  background-size:7px 7px;
+}
+.ph b{
+  font-family:var(--serif);font-size:26px;font-weight:400;color:var(--paper);
+  background:var(--ink);padding:5px 14px;letter-spacing:.02em;
+}
+.ph i{font-style:normal;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-soft);margin-top:10px}
+
+/* ── upload ───────────────────────────────────────────── */
+.thumb.drop-on,.m-hero.drop-on{outline:2px dashed var(--accent);outline-offset:-7px}
+.hero-tools{position:absolute;right:12px;bottom:12px;display:flex;gap:7px;z-index:2}
+.mini{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.13em;
+  padding:7px 12px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;
+}
+.mini:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.m-hero-img{position:absolute;inset:0}
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:200;
+  background:var(--ink);color:var(--paper);padding:11px 20px;
+  font-size:11px;text-transform:uppercase;letter-spacing:.13em;
+  opacity:0;transition:opacity .2s;pointer-events:none;
+}
+#toast.on{opacity:1}
+.card-body{padding:18px 20px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.card-head h3{font-family:var(--serif);font-size:26px;font-weight:400;line-height:1.1}
+.card-head .formula{font-size:11px;color:var(--ink-soft);white-space:nowrap}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{border:1px solid var(--rule);padding:4px 9px;font-size:11px;color:var(--ink);background:var(--paper-2)}
+.tag.more{border-color:transparent;background:none;color:var(--ink-soft)}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:4px}
+.card-foot .g{color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:.14em}
+.card-foot .g::before{content:"◆ ";font-size:8px;vertical-align:1px}
+
+.empty{padding:80px 0;text-align:center;color:var(--ink-soft)}
+
+/* ── modal ────────────────────────────────────────────── */
+dialog{
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:0;width:min(1000px,92vw);max-height:88vh;
+}
+dialog::backdrop{background:rgba(27,23,18,.55)}
+.m-scroll{overflow:auto;max-height:88vh}
+.m-hero{border-bottom:1px solid var(--ink);aspect-ratio:16/6;position:relative;overflow:hidden}
+.m-hero .ph b{font-size:40px;padding:8px 20px}
+.m-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.m-body{padding:30px 34px 0}
+.m-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+.m-head h2{font-family:var(--serif);font-size:44px;font-weight:400;line-height:1}
+.m-head .formula{font-size:12px;color:var(--ink-soft)}
+.m-blurb{font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin:10px 0 20px;max-width:62ch}
+.block{border:1px solid var(--rule);background:var(--paper-2);margin-top:22px}
+.block-h{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.14em}
+.block-b{padding:16px;font-size:13px;line-height:1.75;white-space:pre-wrap}
+.block-b mark{background:rgba(196,71,31,.16);color:var(--ink);padding:1px 3px}
+.m-foot{
+  position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--ink);
+  padding:16px 34px;display:flex;gap:12px;align-items:center;margin-top:26px;
+}
+.btn{
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.14em;
+  padding:12px 20px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;
+}
+.btn.ghost{background:none;color:var(--ink)}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.nav-hint{margin-left:auto;color:var(--ink-soft);font-size:10px;letter-spacing:.1em}
+
+@media(max-width:760px){
+  body{padding:0 18px 80px}
+  .dossier-cols{grid-template-columns:1fr;gap:20px}
+  .vocab dl{grid-template-columns:1fr;gap:2px 0}
+  .vocab dd{margin-bottom:9px}
+  .m-body,.m-foot{padding-left:20px;padding-right:20px}
+  .m-foot{flex-wrap:wrap}
+  .nav-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Inspiration<br><em>Library</em></h1>
+  <div class="masthead-meta">
+    <p class="label">Design styles, decoded</p>
+    <p id="count"></p>
+  </div>
+</header>
+
+<div class="searchbar">
+  <span class="label">Search</span>
+  <input id="q" type="search" placeholder="halftone, voxel, negative space…" autocomplete="off">
+</div>
+
+<nav class="filters" id="filters"></nav>
+<div id="dossier"></div>
+<main class="grid" id="grid"></main>
+
+<dialog id="modal">
+  <div class="m-scroll">
+    <div class="m-hero" id="m-hero">
+      <div class="m-hero-img" id="m-hero-img"></div>
+      <div class="hero-tools">
+        <button class="mini" id="up">Upload screenshot</button>
+        <button class="mini" id="dl" hidden>Save to disk</button>
+        <button class="mini" id="rm" hidden>Remove</button>
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="m-head">
+        <h2 id="m-title"></h2>
+        <span class="formula" id="m-formula"></span>
+      </div>
+      <p class="m-blurb" id="m-blurb"></p>
+      <div class="tags" id="m-tags"></div>
+
+      <div class="block">
+        <div class="block-h" id="m-recipe-h"></div>
+        <div class="block-b" id="m-prompt"></div>
+      </div>
+      <div class="block">
+        <div class="block-h">Build brief — paste into your coding agent</div>
+        <div class="block-b" id="m-brief"></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn" id="copy-brief">Copy brief</button>
+      <button class="btn ghost" id="copy-prompt">Copy image prompt</button>
+      <button class="btn ghost" id="close">Close</button>
+      <span class="nav-hint">← → to browse · esc to close</span>
+    </div>
+  </div>
+</dialog>
+
+<div id="toast"></div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script src="library.js"></script>
+<script>
+const byId = Object.fromEntries(GROUPS.map(g => [g.id, g]));
+const HUES = ['#D9CFC0','#C9C9C4','#CBD3D2','#D2D6C8','#D6CCC4','#C6BFC9','#E0D3C2','#C7D0DA'];
+GROUPS.forEach((g, i) => g.hue = HUES[i % HUES.length]);
+
+const $ = s => document.querySelector(s);
+let filter = 'all', query = '', view = ENTRIES;
+
+// ── uploaded screenshots: Blobs in IndexedDB, keyed by entry id ──
+const shots = {};                       // id -> object URL
+const idb = (() => {
+  const open = new Promise((res, rej) => {
+    const r = indexedDB.open('inspiration-library', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('shots');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  const tx = (mode, fn) => open.then(db => new Promise((res, rej) => {
+    const t = db.transaction('shots', mode), q = fn(t.objectStore('shots'));
+    t.oncomplete = () => res(q && q.result);
+    t.onerror = t.onabort = () => rej(t.error);
+  }));
+  return {
+    set: (k, v) => tx('readwrite', s => s.put(v, k)),
+    del: k => tx('readwrite', s => s.delete(k)),
+    all: async () => {
+      const keys = await tx('readonly', s => s.getAllKeys());
+      const vals = await tx('readonly', s => s.getAll());
+      return Object.fromEntries(keys.map((k, i) => [k, URL.createObjectURL(vals[i])]));
+    },
+  };
+})();
+
+let toastT;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+async function attach(id, file){
+  if (!file) return;
+  if (!file.type.startsWith('image/')) return toast('Not an image file');
+  if (file.size > 20e6) return toast('Too big — 20 MB max');
+  try { await idb.set(id, file); }
+  catch (err) { return toast('Could not save: ' + err.name); }
+  if (shots[id]) URL.revokeObjectURL(shots[id]);
+  shots[id] = URL.createObjectURL(file);
+  refresh();
+  toast('Screenshot attached');
+}
+
+async function detach(id){
+  try { await idb.del(id); } catch (err) { return toast('Could not remove: ' + err.name); }
+  URL.revokeObjectURL(shots[id]); delete shots[id];
+  refresh();
+  toast('Screenshot removed');
+}
+
+const refresh = () => { renderGrid(); if ($('#modal').open) open(cur); };
+
+const matches = e =>
+  (filter === 'all' || e.group === filter) &&
+  (!query || (e.title + ' ' + e.formula + ' ' + e.blurb + ' ' + e.keywords.join(' ') + ' ' + byId[e.group].name)
+    .toLowerCase().includes(query));
+
+const placeholder = e => `<div class="ph"><b>${e.title}</b><i>drop a screenshot here</i></div>`;
+const thumb = e => {
+  const src = shots[e.id] || e.image;
+  return src
+    ? `<img src="${src}" alt="${e.title}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',innerHTML:'<b>${e.title}</b><i>drop a screenshot here</i>'}))">`
+    : placeholder(e);
+};
+
+function renderFilters(){
+  const counts = ENTRIES.reduce((a, e) => (a[e.group] = (a[e.group] || 0) + 1, a), {});
+  $('#filters').innerHTML =
+    [{id:'all', name:'All', n:ENTRIES.length}, ...GROUPS.map(g => ({id:g.id, name:g.name, n:counts[g.id] || 0}))]
+      .map(f => `<button class="chip" aria-pressed="${filter === f.id}" data-f="${f.id}">${f.name}<span>${f.n}</span></button>`)
+      .join('');
+}
+
+function renderDossier(){
+  const g = byId[filter];
+  if (!g) return $('#dossier').innerHTML = '';
+  $('#dossier').innerHTML = `
+    <section class="dossier">
+      <h2>${g.name}</h2>
+      <div class="tagline">${g.tagline}</div>
+      <div class="dossier-cols">
+        <div><h3 class="label">What it is</h3><p>${g.what}</p></div>
+        <div><h3 class="label">What it means</h3><p>${g.means}</p></div>
+      </div>
+      <div class="vocab">
+        <h3 class="label">Vocabulary</h3>
+        <dl>${g.vocabulary.map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join('')}</dl>
+      </div>
+    </section>`;
+}
+
+function renderGrid(){
+  view = ENTRIES.filter(matches);
+  $('#count').textContent = `${view.length} of ${ENTRIES.length} references · ${GROUPS.length} styles`;
+  $('#grid').innerHTML = view.length ? view.map((e, i) => {
+    const g = byId[e.group];
+    return `<button class="card" data-i="${i}" style="animation-delay:${Math.min(i, 12) * 35}ms">
+      <div class="thumb" style="--ph:${g.hue}">${thumb(e)}</div>
+      <div class="card-body">
+        <div class="card-head"><h3>${e.title}</h3><span class="formula">${e.formula}</span></div>
+        <div class="tags">
+          ${e.keywords.slice(0, 3).map(k => `<span class="tag">${k}</span>`).join('')}
+          ${e.keywords.length > 3 ? `<span class="tag more">+${e.keywords.length - 3}</span>` : ''}
+        </div>
+        <div class="card-foot">
+          <span class="g">${g.name}</span>
+          <span class="label">${String(i + 1).padStart(2, '0')} / ${String(view.length).padStart(2, '0')}</span>
+        </div>
+      </div>
+    </button>`;
+  }).join('') : `<p class="empty">Nothing matches “${query}”.</p>`;
+}
+
+const render = () => { renderFilters(); renderDossier(); renderGrid(); };
+
+// ── modal ────────────────────────────────────────────────
+let cur = 0;
+function open(i){
+  cur = (i + view.length) % view.length;
+  const e = view[cur], g = byId[e.group];
+  $('#m-hero').style.setProperty('--ph', g.hue);
+  $('#m-hero-img').innerHTML = thumb(e);
+  $('#rm').hidden = $('#dl').hidden = !shots[e.id];
+  $('#up').textContent = shots[e.id] ? 'Replace' : 'Upload screenshot';
+  $('#m-title').textContent = e.title;
+  $('#m-formula').textContent = e.formula;
+  $('#m-blurb').textContent = e.blurb;
+  $('#m-tags').innerHTML = e.keywords.map(k => `<span class="tag">${k}</span>`).join('');
+  $('#m-recipe-h').textContent = `Image recipe — fill [SUBJECT], send to your image model`;
+  $('#m-prompt').innerHTML = e.imagePrompt.replace(/(\[SUBJECT:[^\]]*\])/, '<mark>$1</mark>');
+  $('#m-brief').textContent = e.brief;
+  if (!$('#modal').open) $('#modal').showModal();
+  $('.m-scroll').scrollTop = 0;
+}
+
+async function copy(text, btn){
+  const was = btn.textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied ✓'; }
+  catch { btn.textContent = 'Copy failed'; }
+  setTimeout(() => btn.textContent = was, 1400);
+}
+
+// ── events ───────────────────────────────────────────────
+$('#filters').onclick = ev => {
+  const b = ev.target.closest('[data-f]');
+  if (b) location.hash = b.dataset.f;
+};
+$('#grid').onclick = ev => {
+  const c = ev.target.closest('.card');
+  if (c) open(+c.dataset.i);
+};
+$('#q').oninput = ev => { query = ev.target.value.trim().toLowerCase(); renderGrid(); };
+$('#copy-brief').onclick = ev => copy(view[cur].brief, ev.currentTarget);
+$('#copy-prompt').onclick = ev => copy(view[cur].imagePrompt, ev.currentTarget);
+$('#close').onclick = () => $('#modal').close();
+
+// ── screenshot upload: click, or drag anywhere onto a card ───────
+const zoneId = z => z.id === 'm-hero' ? view[cur].id : view[+z.closest('.card').dataset.i].id;
+const ZONES = '.thumb,.m-hero';
+
+document.addEventListener('dragover', ev => {
+  ev.preventDefault();                                   // else the browser opens the dropped file
+  const z = ev.target.closest && ev.target.closest(ZONES);
+  document.querySelectorAll('.drop-on').forEach(n => n !== z && n.classList.remove('drop-on'));
+  if (z) z.classList.add('drop-on');
+});
+document.addEventListener('dragleave', ev => {
+  if (!ev.relatedTarget) document.querySelectorAll('.drop-on').forEach(n => n.classList.remove('drop-on'));
+});
+document.addEventListener('drop', ev => {
+  ev.preventDefault();
+  document.querySelectorAll('.drop-on').forEach(n => n.classList.remove('drop-on'));
+  const z = ev.target.closest && ev.target.closest(ZONES);
+  if (z) attach(zoneId(z), ev.dataTransfer.files[0]);
+});
+
+$('#up').onclick = () => $('#file').click();
+$('#file').onchange = ev => { attach(view[cur].id, ev.target.files[0]); ev.target.value = ''; };
+$('#rm').onclick = () => detach(view[cur].id);
+$('#dl').onclick = () => {                               // uploads live in this browser only — let them out
+  const e = view[cur];
+  Object.assign(document.createElement('a'), { href: shots[e.id], download: e.id }).click();
+};
+$('#modal').onclick = ev => { if (ev.target.id === 'modal') $('#modal').close(); };
+document.onkeydown = ev => {
+  if (!$('#modal').open) return;
+  if (ev.key === 'ArrowRight') open(cur + 1);
+  if (ev.key === 'ArrowLeft') open(cur - 1);
+};
+onhashchange = () => {
+  const h = location.hash.slice(1);
+  filter = (h === 'all' || byId[h]) ? h : 'all';
+  render();
+  scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+idb.all()
+  .then(m => Object.assign(shots, m))
+  .catch(err => toast('Uploads unavailable: ' + err.name))
+  .finally(onhashchange);
+</script>
+</body>
+</html>
