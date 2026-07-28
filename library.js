@@ -151,4 +151,15 @@ const GROUPS = [
 ];
 
 const ENTRIES = [
+  // ── Colour-Block Collage ──────────────────────────────────────────
+  {
+    id: 'havena',
+    group: 'colour-block-collage',
+    title: 'Havena',
+    formula: 'hospitality × colour-block poster',
+    blurb: 'Flat wine ground, orange sparkles stuck over the type, and a lavender booking bar dropped straight across the hero.',
+    keywords: ['wine-magenta flat ground', 'orange four-point sparkle stickers', 'heavy uppercase headline ending in a period', 'lime buttons with hard offset shadows', 'lavender booking bar overlaying the hero', 'stacked angled colour slabs behind the photo'],
+    imagePrompt: '[SUBJECT: a Mediterranean stone villa with a terracotta roof, teal shutters and cream canvas parasols in a cypress garden] photographed in bright midday summer sun under a deep blue sky with crisp white cumulus, deeply saturated colour with warm honey limestone set against dense green cypress and turquoise-teal paintwork, high clarity with strong open shadows, glossy travel-brochure grade with no filmic softness or grain, wide horizontal crop with the building right of centre and foliage filling the left, no haze, no overcast light, no muted or desaturated treatment',
+    brief: 'Build a hero for a luxury resort booking site. Ground is a flat wine-magenta (#8B1C5D) inside a near-black plum page frame (#2E0A1F), with faint darker hill silhouettes tinted into the magenta as the only background texture. The headline is a heavy geometric sans, uppercase, white, two centred lines at 64px with 0.92 leading, and it always ends in a full stop; the subhead is two centred lines of 16px warm-white held to 60% width. Nav is 15px white with the active item underlined by a short 3px golden rule. Every button is a hard rectangle carrying a 6px offset shadow in a darker tone with zero blur — the primary is chartreuse (#D6F04B) with black uppercase text and a trailing arrow. Scatter orange (#F0602A) four-point sparkle glyphs at three sizes around the headline, with one of them overlapping a letterform. Float a lavender (#DBC8F2) booking bar across the full content width over the base of the hero: square corners, hairline vertical dividers between CHECK IN, CHECK OUT and GUESTS, each label 11px uppercase in magenta, with golden (#F7C325) circular icon buttons. Below it sits a full-bleed photograph with two thin angled slabs of orange and yellow stacked behind its top edge, offset a few degrees so they read as sheets of paper underneath. Nothing on this page is grey, no shadow is ever blurred, and no corner is rounded except the circular icon buttons.',
+  },
 ];

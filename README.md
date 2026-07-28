@@ -9,6 +9,18 @@ The `add-to-library` skill (`.claude/skills/add-to-library/SKILL.md`) tells it h
 group, write the keywords, image prompt and build brief, drop the file in `images/`, and
 validate with `node check.mjs`. Codex and other agents pick it up via `AGENTS.md`.
 
+## Screenshot straight from the clipboard
+
+macOS screenshots land on the clipboard, and pasting one into a chat doesn't clear it,
+so an agent can pull it out afterwards:
+
+```bash
+./clip.sh havena
+```
+
+Writes `images/havena.png`. Run it while that screenshot is still the last thing you
+copied, and check the result — the clipboard holds whatever was copied most recently.
+
 ## Adding a screenshot
 
 Click **Link images/ folder** once and pick this repo's `images/` folder. After that,

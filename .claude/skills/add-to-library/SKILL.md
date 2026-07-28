@@ -106,9 +106,21 @@ URL is worse than none.
 ## The screenshot file
 
 If the image exists on disk, copy it to `images/<id>.<ext>` and set `image`.
-If it was pasted into chat and has no path, leave `image` out and tell the user to
-drag the file onto the card in the app — with `images/` linked there, the upload
-writes a real file to `images/<id>.<ext>`, which the app then finds on its own.
+
+If it was pasted into chat with no path — a macOS screenshot goes to the clipboard,
+and pasting does not clear it — grab it from the clipboard:
+
+```bash
+./clip.sh <id>
+```
+
+**Then read the saved file back and look at it.** The clipboard holds whatever was
+copied *last*, which is not always the image in the conversation. If it isn't the
+design you are cataloguing, delete it and ask the user to re-copy — never file an
+image you have not looked at.
+
+If the clipboard has moved on and the user can't re-copy, leave `image` out and tell
+them to drag the file onto the card in the app instead.
 
 ## Verify
 
