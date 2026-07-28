@@ -19,5 +19,6 @@ for (const e of ENTRIES) {
   assert(e.keywords?.length >= 3, `${e.id}: needs 3+ keywords`);
   assert(e.imagePrompt.includes('[SUBJECT'), `${e.id}: imagePrompt has no [SUBJECT: …] slot`);
   if (e.image) assert(existsSync(new URL('./' + e.image, import.meta.url)), `${e.id}: missing file ${e.image}`);
+  if (e.source) assert(/^https?:\/\/\S+$/.test(e.source), `${e.id}: source must be an http(s) URL`);
 }
 console.log(`ok — ${GROUPS.length} groups, ${ENTRIES.length} entries`);

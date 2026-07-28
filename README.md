@@ -11,12 +11,20 @@ validate with `node check.mjs`. Codex and other agents pick it up via `AGENTS.md
 
 ## Adding a screenshot
 
-Drag an image file onto any card, or open a card and hit **Upload screenshot**.
-It's stored in the browser (IndexedDB), survives reloads, and overrides the entry's
-`image` field. **Remove** clears it.
+Click **Link images/ folder** once and pick this repo's `images/` folder. After that,
+dragging an image onto a card writes a real file to `images/<id>.<ext>` — committable,
+no `library.js` edit needed, the app finds it by id. **Remove** deletes the file too.
 
-That storage is per-browser-profile and not in git. To make a screenshot permanent,
-hit **Save to disk**, move the file into `images/`, and set `image:` on the entry.
+Without the link the upload still works, but the image only lives in this browser's
+IndexedDB. **Save to disk** exports it so you can drop it into `images/` by hand.
+
+The folder link is remembered, though the browser re-asks for write permission on the
+first upload of each session.
+
+## Recording where a design came from
+
+Open a card and hit **Add source** to store the URL. It shows under the title as a link.
+Agents set it via the `source` field in `library.js`; both work, and the in-app value wins.
 
 ## Adding a reference
 

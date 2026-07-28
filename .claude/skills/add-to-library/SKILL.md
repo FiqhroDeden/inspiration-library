@@ -20,6 +20,7 @@ Append to the `ENTRIES` array in `library.js`, grouped with its style neighbours
   id: 'kebab-slug',              // unique across ENTRIES
   group: 'existing-group-id',    // must be a GROUPS id — see "New group" below
   image: 'images/kebab-slug.png',// omit if the file isn't on disk
+  source: 'https://…',           // where the design lives — see below
   title: 'Short Name',
   formula: 'subject × treatment',// see below — the order is fixed
   blurb: 'One sentence naming the move that makes it work.',
@@ -89,11 +90,25 @@ and `vocabulary`: 6–8 `[term, definition]` pairs of the real names for the tec
 plain language. This glossary is the point of the app; don't pad it with generic
 design words.
 
+### source — always try to capture it
+
+The URL the design lives at. This is the field the user cares most about not losing,
+so do not skip it:
+
+- given a URL, use it verbatim
+- given a screenshot with a visible address bar, read the URL off it
+- otherwise **ask the user for the link** before finishing
+
+Only omit `source` if the user says they don't have one. If you read it from an
+address bar and can't make out every character, ask rather than guess — a wrong
+URL is worse than none.
+
 ## The screenshot file
 
 If the image exists on disk, copy it to `images/<id>.<ext>` and set `image`.
 If it was pasted into chat and has no path, leave `image` out and tell the user to
-drag the file onto the card in the app — the upload persists in the browser.
+drag the file onto the card in the app — with `images/` linked there, the upload
+writes a real file to `images/<id>.<ext>`, which the app then finds on its own.
 
 ## Verify
 

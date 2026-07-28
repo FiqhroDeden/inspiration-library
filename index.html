@@ -141,7 +141,10 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 .m-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
 .m-head h2{font-family:var(--serif);font-size:44px;font-weight:400;line-height:1}
 .m-head .formula{font-size:12px;color:var(--ink-soft)}
-.m-blurb{font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin:10px 0 20px;max-width:62ch}
+.m-blurb{font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin:10px 0 14px;max-width:62ch}
+.m-source{display:inline-block;margin-bottom:18px;font-size:11px;letter-spacing:.06em;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
+.m-source:hover{border-color:var(--accent)}
+.m-source[hidden]{display:none}
 .block{border:1px solid var(--rule);background:var(--paper-2);margin-top:22px}
 .block-h{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.14em}
 .block-b{padding:16px;font-size:13px;line-height:1.75;white-space:pre-wrap}
@@ -182,6 +185,7 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 <div class="searchbar">
   <span class="label">Search</span>
   <input id="q" type="search" placeholder="halftone, voxel, negative space…" autocomplete="off">
+  <button class="mini" id="link">Link images/ folder</button>
 </div>
 
 <nav class="filters" id="filters"></nav>
@@ -193,6 +197,7 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
     <div class="m-hero" id="m-hero">
       <div class="m-hero-img" id="m-hero-img"></div>
       <div class="hero-tools">
+        <button class="mini" id="src">Add source</button>
         <button class="mini" id="up">Upload screenshot</button>
         <button class="mini" id="dl" hidden>Save to disk</button>
         <button class="mini" id="rm" hidden>Remove</button>
@@ -204,6 +209,7 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
         <span class="formula" id="m-formula"></span>
       </div>
       <p class="m-blurb" id="m-blurb"></p>
+      <a class="m-source" id="m-source" target="_blank" rel="noopener noreferrer" hidden></a>
       <div class="tags" id="m-tags"></div>
 
       <div class="block">
@@ -236,30 +242,66 @@ GROUPS.forEach((g, i) => g.hue = HUES[i % HUES.length]);
 const $ = s => document.querySelector(s);
 let filter = 'all', query = '', view = ENTRIES;
 
-// ── uploaded screenshots: Blobs in IndexedDB, keyed by entry id ──
-const shots = {};                       // id -> object URL
+// ── uploads ──────────────────────────────────────────────────────
+// With images/ linked, a dropped screenshot is written straight into the
+// folder as a real file. Without it, the Blob is kept in IndexedDB only.
+const M = {};                           // id -> {file, url, source}
+let dir = null;                         // FileSystemDirectoryHandle for images/
+
+const entry = id => ENTRIES.find(e => e.id === id);
+const srcOf = e => (M[e.id] && M[e.id].source) || e.source || '';
+const shotOf = e => (M[e.id] && (M[e.id].file || M[e.id].url)) || e.image || '';
+
 const idb = (() => {
   const open = new Promise((res, rej) => {
-    const r = indexedDB.open('inspiration-library', 1);
-    r.onupgradeneeded = () => r.result.createObjectStore('shots');
+    const r = indexedDB.open('inspiration-library', 2);
+    r.onupgradeneeded = () => {
+      if (!r.result.objectStoreNames.contains('meta')) r.result.createObjectStore('meta');
+    };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);
+    r.onblocked = () => rej(new DOMException('Another tab has the library open', 'BlockedError'));
   });
   const tx = (mode, fn) => open.then(db => new Promise((res, rej) => {
-    const t = db.transaction('shots', mode), q = fn(t.objectStore('shots'));
+    const t = db.transaction('meta', mode), q = fn(t.objectStore('meta'));
     t.oncomplete = () => res(q && q.result);
     t.onerror = t.onabort = () => rej(t.error);
   }));
   return {
+    get: k => tx('readonly', s => s.get(k)),
     set: (k, v) => tx('readwrite', s => s.put(v, k)),
     del: k => tx('readwrite', s => s.delete(k)),
     all: async () => {
       const keys = await tx('readonly', s => s.getAllKeys());
       const vals = await tx('readonly', s => s.getAll());
-      return Object.fromEntries(keys.map((k, i) => [k, URL.createObjectURL(vals[i])]));
+      return Object.fromEntries(keys.map((k, i) => [k, vals[i]]));
     },
   };
 })();
+
+// must be called from inside a click or drop — permission needs a gesture
+async function ensureDir(){
+  if (!dir) return false;
+  const opts = { mode: 'readwrite' };
+  try {
+    return await dir.queryPermission(opts) === 'granted'
+      || await dir.requestPermission(opts) === 'granted';
+  } catch { return false; }
+}
+
+function syncDirUI(){
+  $('#link').textContent = dir ? 'images/ linked ✓' : 'Link images/ folder';
+  $('#link').title = dir ? 'Uploads are written into the folder as real files'
+                         : 'Link the folder so uploads become real files you can commit';
+}
+
+async function linkDir(){
+  try {
+    const h = await showDirectoryPicker({ mode: 'readwrite' });
+    if (h.name !== 'images') return toast('Pick the images/ folder itself');
+    dir = h; await idb.set('__dir', h); syncDirUI(); toast('images/ linked');
+  } catch (err) { if (err.name !== 'AbortError') toast('Link failed: ' + err.name); }
+}
 
 let toastT;
 function toast(msg){
@@ -272,19 +314,58 @@ async function attach(id, file){
   if (!file) return;
   if (!file.type.startsWith('image/')) return toast('Not an image file');
   if (file.size > 20e6) return toast('Too big — 20 MB max');
-  try { await idb.set(id, file); }
-  catch (err) { return toast('Could not save: ' + err.name); }
-  if (shots[id]) URL.revokeObjectURL(shots[id]);
-  shots[id] = URL.createObjectURL(file);
+  const rec = (await idb.get(id)) || {};
+  try {
+    if (await ensureDir()) {
+      const ext = (file.name.match(/\.[a-z0-9]+$/i) || ['.png'])[0].toLowerCase();
+      const fh = await dir.getFileHandle(id + ext, { create: true });
+      const w = await fh.createWritable();
+      await w.write(file); await w.close();
+      rec.file = 'images/' + id + ext; delete rec.blob;
+    } else {
+      rec.blob = file; delete rec.file;
+    }
+    await idb.set(id, rec);
+  } catch (err) { return toast('Could not save: ' + err.name); }
+  remember(id, rec);
   refresh();
-  toast('Screenshot attached');
+  toast(rec.file ? 'Saved to ' + rec.file : 'Attached — link images/ to save a real file');
 }
 
 async function detach(id){
-  try { await idb.del(id); } catch (err) { return toast('Could not remove: ' + err.name); }
-  URL.revokeObjectURL(shots[id]); delete shots[id];
+  const rec = (await idb.get(id)) || {};
+  try {
+    if (rec.file && await ensureDir()) await dir.removeEntry(rec.file.split('/').pop());
+  } catch { /* file already gone, or permission withdrawn — drop the reference anyway */ }
+  delete rec.file; delete rec.blob;
+  try { rec.source ? await idb.set(id, rec) : await idb.del(id); }
+  catch (err) { return toast('Could not remove: ' + err.name); }
+  remember(id, rec);
   refresh();
   toast('Screenshot removed');
+}
+
+async function setSource(id){
+  const rec = (await idb.get(id)) || {};
+  const url = (prompt('Source URL for this design', srcOf(entry(id))) || '').trim();
+  if (!url) return;
+  if (!/^https?:\/\//i.test(url)) return toast('Must start with http:// or https://');
+  rec.source = url;
+  try { await idb.set(id, rec); } catch (err) { return toast('Could not save: ' + err.name); }
+  remember(id, rec);
+  refresh();
+  toast('Source saved');
+}
+
+// bust the cache when a file is overwritten at the same path
+let vsn = 0;
+function remember(id, rec){
+  if (M[id] && M[id].url) URL.revokeObjectURL(M[id].url);
+  M[id] = {
+    file: rec.file ? rec.file + '?v=' + (++vsn) : null,
+    url: rec.blob ? URL.createObjectURL(rec.blob) : null,
+    source: rec.source,
+  };
 }
 
 const refresh = () => { renderGrid(); if ($('#modal').open) open(cur); };
@@ -296,7 +377,7 @@ const matches = e =>
 
 const placeholder = e => `<div class="ph"><b>${e.title}</b><i>drop a screenshot here</i></div>`;
 const thumb = e => {
-  const src = shots[e.id] || e.image;
+  const src = shotOf(e);
   return src
     ? `<img src="${src}" alt="${e.title}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',innerHTML:'<b>${e.title}</b><i>drop a screenshot here</i>'}))">`
     : placeholder(e);
@@ -305,7 +386,9 @@ const thumb = e => {
 function renderFilters(){
   const counts = ENTRIES.reduce((a, e) => (a[e.group] = (a[e.group] || 0) + 1, a), {});
   $('#filters').innerHTML =
-    [{id:'all', name:'All', n:ENTRIES.length}, ...GROUPS.map(g => ({id:g.id, name:g.name, n:counts[g.id] || 0}))]
+    [{id:'all', name:'All', n:ENTRIES.length},
+     ...GROUPS.map(g => ({id:g.id, name:g.name, n:counts[g.id] || 0}))
+              .filter(f => f.n || f.id === filter)]   // a style shows up once you have one
       .map(f => `<button class="chip" aria-pressed="${filter === f.id}" data-f="${f.id}">${f.name}<span>${f.n}</span></button>`)
       .join('');
 }
@@ -356,14 +439,19 @@ const render = () => { renderFilters(); renderDossier(); renderGrid(); };
 let cur = 0;
 function open(i){
   cur = (i + view.length) % view.length;
-  const e = view[cur], g = byId[e.group];
+  const e = view[cur], g = byId[e.group], src = srcOf(e);
   $('#m-hero').style.setProperty('--ph', g.hue);
   $('#m-hero-img').innerHTML = thumb(e);
-  $('#rm').hidden = $('#dl').hidden = !shots[e.id];
-  $('#up').textContent = shots[e.id] ? 'Replace' : 'Upload screenshot';
+  const has = M[e.id] || {};
+  $('#rm').hidden = !(has.file || has.url);
+  $('#dl').hidden = !has.url;                    // only a browser-only blob needs exporting
+  $('#up').textContent = (has.file || has.url) ? 'Replace' : 'Upload screenshot';
+  $('#src').textContent = src ? 'Edit source' : 'Add source';
   $('#m-title').textContent = e.title;
   $('#m-formula').textContent = e.formula;
   $('#m-blurb').textContent = e.blurb;
+  $('#m-source').hidden = !src;
+  if (src) { $('#m-source').href = src; $('#m-source').textContent = '↗ ' + src.replace(/^https?:\/\/(www\.)?/, ''); }
   $('#m-tags').innerHTML = e.keywords.map(k => `<span class="tag">${k}</span>`).join('');
   $('#m-recipe-h').textContent = `Image recipe — fill [SUBJECT], send to your image model`;
   $('#m-prompt').innerHTML = e.imagePrompt.replace(/(\[SUBJECT:[^\]]*\])/, '<mark>$1</mark>');
@@ -413,12 +501,14 @@ document.addEventListener('drop', ev => {
   if (z) attach(zoneId(z), ev.dataTransfer.files[0]);
 });
 
+$('#link').onclick = linkDir;
 $('#up').onclick = () => $('#file').click();
 $('#file').onchange = ev => { attach(view[cur].id, ev.target.files[0]); ev.target.value = ''; };
 $('#rm').onclick = () => detach(view[cur].id);
-$('#dl').onclick = () => {                               // uploads live in this browser only — let them out
+$('#src').onclick = () => setSource(view[cur].id);
+$('#dl').onclick = () => {                     // browser-only blob — let it out so it can reach images/
   const e = view[cur];
-  Object.assign(document.createElement('a'), { href: shots[e.id], download: e.id }).click();
+  Object.assign(document.createElement('a'), { href: M[e.id].url, download: e.id + '.png' }).click();
 };
 $('#modal').onclick = ev => { if (ev.target.id === 'modal') $('#modal').close(); };
 document.onkeydown = ev => {
@@ -434,9 +524,12 @@ onhashchange = () => {
 };
 
 idb.all()
-  .then(m => Object.assign(shots, m))
+  .then(all => {
+    dir = all.__dir || null;
+    for (const [id, rec] of Object.entries(all)) if (id !== '__dir') remember(id, rec);
+  })
   .catch(err => toast('Uploads unavailable: ' + err.name))
-  .finally(onhashchange);
+  .finally(() => { syncDirUI(); onhashchange(); });
 </script>
 </body>
 </html>
