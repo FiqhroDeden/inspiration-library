@@ -143,6 +143,9 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 .m-hero{border-bottom:1px solid var(--ink);position:relative;background:var(--paper-2)}
 .m-hero-img{position:relative;min-height:140px}   /* floor so the placeholder has a box */
 .m-hero img{width:100%;height:auto;max-height:72vh;object-fit:contain;display:block}
+.m-hero-img:has(img){cursor:zoom-in}
+.m-hero-img.zoom{cursor:zoom-out}
+.m-hero-img.zoom img{max-height:none}             /* full width, let .m-scroll carry it */
 .m-hero .ph b{font-size:40px;padding:8px 20px}
 .m-body{padding:30px 34px 0}
 .m-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
@@ -237,7 +240,7 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
       <button class="btn" id="copy-brief">Copy brief</button>
       <button class="btn ghost" id="copy-prompt">Copy image prompt</button>
       <button class="btn ghost" id="close">Close</button>
-      <span class="nav-hint">← → to browse · esc to close</span>
+      <span class="nav-hint">click image to zoom · ← → to browse · esc to close</span>
     </div>
   </div>
 </dialog>
@@ -470,6 +473,7 @@ function open(i){
   const e = view[cur], g = byId[e.group], src = srcOf(e);
   $('#m-hero').style.setProperty('--ph', g.hue);
   $('#m-hero-img').innerHTML = thumb(e);
+  $('#m-hero-img').classList.remove('zoom');       // every entry opens fitted
   const has = M[e.id] || {};
   $('#rm').hidden = !(has.file || has.url);
   $('#dl').hidden = !has.url;                    // only a browser-only blob needs exporting
@@ -534,6 +538,10 @@ document.addEventListener('drop', ev => {
   if (z) attach(zoneId(z), ev.dataTransfer.files[0]);
 });
 
+$('#m-hero-img').onclick = ev => {
+  if (!ev.currentTarget.querySelector('img')) return;      // nothing to zoom on a placeholder
+  if (ev.currentTarget.classList.toggle('zoom')) $('.m-scroll').scrollTop = 0;
+};
 $('#link').onclick = linkDir;
 $('#up').onclick = () => $('#file').click();
 $('#file').onchange = ev => { attach(view[cur].id, ev.target.files[0]); ev.target.value = ''; };
