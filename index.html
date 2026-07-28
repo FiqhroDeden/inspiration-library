@@ -131,6 +131,8 @@ h1 em{font-style:italic;color:var(--accent)}
 dialog{
   border:1px solid var(--ink);background:var(--paper);color:var(--ink);
   padding:0;width:min(1000px,92vw);max-height:88vh;
+  /* the * { margin:0 } reset above wipes the UA's margin:auto that centres a modal */
+  position:fixed;inset:0;margin:auto;
 }
 dialog::backdrop{background:rgba(27,23,18,.55)}
 .m-scroll{overflow:auto;max-height:88vh}
