@@ -154,6 +154,15 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
 .m-head .formula{font-size:12px;color:var(--ink-soft)}
 .m-blurb{font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin:10px 0 14px;max-width:62ch}
 .m-meta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;min-height:14px}
+/* a real field, not prompt() — a long URL has to be visible to be checked */
+.src-edit{display:flex;align-items:flex-start;gap:8px;margin:-8px 0 18px}
+.src-edit textarea{
+  flex:1;min-width:0;font-family:var(--mono);font-size:12px;line-height:1.5;padding:9px 12px;
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);outline:0;
+  resize:vertical;word-break:break-all;                 /* a long URL wraps, never clips */
+}
+.src-edit textarea:focus{border-color:var(--accent)}
+.src-edit[hidden]{display:none}
 .m-source{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
 .m-source:hover{border-color:var(--accent)}
 .m-source[hidden]{display:none}
@@ -225,6 +234,11 @@ dialog::backdrop{background:rgba(27,23,18,.55)}
       <div class="m-meta">
         <span class="label" id="m-parts"></span>
         <a class="m-source" id="m-source" target="_blank" rel="noopener noreferrer" hidden></a>
+      </div>
+      <div class="src-edit" id="src-edit" hidden>
+        <textarea id="src-input" rows="2" placeholder="https://…" spellcheck="false" autocomplete="off"></textarea>
+        <button class="mini" id="src-save">Save</button>
+        <button class="mini" id="src-clear">Clear</button>
       </div>
       <div class="tags" id="m-tags"></div>
 
@@ -361,16 +375,16 @@ async function detach(id){
   toast('Screenshot removed');
 }
 
-async function setSource(id){
+async function setSource(id, url){
+  url = (url || '').trim();
+  if (url && !/^https?:\/\//i.test(url)) return toast('Must start with http:// or https://');
   const rec = (await idb.get(id)) || {};
-  const url = (prompt('Source URL for this design', srcOf(entry(id))) || '').trim();
-  if (!url) return;
-  if (!/^https?:\/\//i.test(url)) return toast('Must start with http:// or https://');
-  rec.source = url;
+  if (url) rec.source = url; else delete rec.source;
   try { await idb.set(id, rec); } catch (err) { return toast('Could not save: ' + err.name); }
   remember(id, rec);
+  $('#src-edit').hidden = true;
   refresh();
-  toast('Source saved');
+  toast(url ? 'Source saved' : 'Source cleared');
 }
 
 // bust the cache when a file is overwritten at the same path
@@ -475,6 +489,7 @@ function open(i){
   $('#m-hero').style.setProperty('--ph', g.hue);
   $('#m-hero-img').innerHTML = thumb(e);
   $('#m-hero-img').classList.remove('zoom');       // every entry opens fitted
+  $('#src-edit').hidden = true;
   const has = M[e.id] || {};
   $('#rm').hidden = !(has.file || has.url);
   $('#dl').hidden = !has.url;                    // only a browser-only blob needs exporting
@@ -547,7 +562,19 @@ $('#link').onclick = linkDir;
 $('#up').onclick = () => $('#file').click();
 $('#file').onchange = ev => { attach(view[cur].id, ev.target.files[0]); ev.target.value = ''; };
 $('#rm').onclick = () => detach(view[cur].id);
-$('#src').onclick = () => setSource(view[cur].id);
+$('#src').onclick = () => {
+  const box = $('#src-edit'), input = $('#src-input');
+  box.hidden = !box.hidden;
+  if (box.hidden) return;
+  input.value = srcOf(view[cur]);
+  input.focus(); input.select();
+};
+$('#src-save').onclick = () => setSource(view[cur].id, $('#src-input').value);
+$('#src-clear').onclick = () => setSource(view[cur].id, '');
+$('#src-input').onkeydown = ev => {
+  if (ev.key === 'Enter') setSource(view[cur].id, ev.target.value);
+  if (ev.key === 'Escape') { ev.preventDefault(); $('#src-edit').hidden = true; }  // close the field, not the modal
+};
 $('#dl').onclick = () => {                     // browser-only blob — let it out so it can reach images/
   const e = view[cur];
   Object.assign(document.createElement('a'), { href: M[e.id].url, download: e.id + '.png' }).click();
@@ -555,6 +582,7 @@ $('#dl').onclick = () => {                     // browser-only blob — let it o
 $('#modal').onclick = ev => { if (ev.target.id === 'modal') $('#modal').close(); };
 document.onkeydown = ev => {
   if (!$('#modal').open) return;
+  if (ev.target.matches('input, textarea')) return;   // arrows belong to the caret while typing
   if (ev.key === 'ArrowRight') open(cur + 1);
   if (ev.key === 'ArrowLeft') open(cur - 1);
 };

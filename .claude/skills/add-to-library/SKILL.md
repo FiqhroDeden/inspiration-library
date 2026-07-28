@@ -17,15 +17,22 @@ However the image arrived — pasted into chat, grabbed off the clipboard, or al
 file on disk — **you need the source URL before you write anything to `library.js`.**
 
 1. URL given in the message → use it verbatim.
-2. Address bar visible in the screenshot **and every character legible** → read it off.
-3. Otherwise → **ask the user for the link, and wait for the answer.**
+2. Otherwise → **ask the user for the link, and wait for the answer.**
+
+**Never read the source off a browser frame inside the image.** Design shots are
+routinely presented in a drawn browser chrome, and the URL in it is part of the artwork —
+a mockup domain for a brand that may not exist. It tells you what the design depicts,
+never where the design lives. A reference of a hotel site showing `havena.com` in its
+fake address bar actually lives on Dribbble; recording `havena.com` loses the link
+you were trying to keep and invents a page that isn't there.
+
+Ask. The user knows where they found it, and it costs them one line.
 
 Ask before you edit the file, not after. Adding the entry and then asking is the wrong
 order — that is the habit this step exists to prevent.
 
 Never invent a URL. Do not reconstruct one from a brand name, a logo, or a wordmark;
-`Havena` does not license you to write `havena.com`. If you can see an address bar but
-cannot resolve every character, you do not have the URL — ask.
+`Havena` does not license you to write `havena.com`.
 
 **If the user says there is no source** — their own work, a concept piece, an image with
 no page behind it — omit `source` and add the entry. That is a complete answer. Take it
