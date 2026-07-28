@@ -118,9 +118,10 @@ h1 em{font-style:italic;color:var(--accent)}
 }
 #toast.on{opacity:1}
 .card-body{padding:18px 20px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
-.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
-.card-head h3{font-family:var(--serif);font-size:26px;font-weight:400;line-height:1.1}
-.card-head .formula{font-size:11px;color:var(--ink-soft);white-space:nowrap}
+.card-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:3px 14px}
+.card-head h3{font-family:var(--serif);font-size:26px;font-weight:400;line-height:1.1;min-width:0;overflow-wrap:anywhere}
+/* no nowrap: a long formula drops to its own line instead of crushing the title */
+.card-head .formula{font-size:11px;color:var(--ink-soft);margin-left:auto;text-align:right}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{border:1px solid var(--rule);padding:4px 9px;font-size:11px;color:var(--ink);background:var(--paper-2)}
 .tag.more{border-color:transparent;background:none;color:var(--ink-soft)}
