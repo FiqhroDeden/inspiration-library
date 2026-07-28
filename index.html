@@ -509,10 +509,28 @@ function open(i){
   $('.m-scroll').scrollTop = 0;
 }
 
+// Chrome denies clipboard-write to the file:// origin, so the async API always
+// rejects here. execCommand still works from a click — and the scratch textarea
+// must live inside the <dialog>, or the modal's top layer blocks its selection.
+function legacyCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+  ($('#modal').open ? $('#modal') : document.body).appendChild(ta);
+  ta.select(); ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { /* falls through to false */ }
+  ta.remove();
+  return ok;
+}
+
 async function copy(text, btn){
   const was = btn.textContent;
-  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied ✓'; }
-  catch { btn.textContent = 'Copy failed'; }
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch { ok = legacyCopy(text); }
+  btn.textContent = ok ? 'Copied ✓' : 'Copy failed';
   setTimeout(() => btn.textContent = was, 1400);
 }
 
