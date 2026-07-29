@@ -155,6 +155,23 @@ const GROUPS = [
       ['complementary clash', 'deliberately jarring colour pairs, e.g. magenta against acid yellow'],
     ],
   },
+  {
+    id: 'deco-serif-editorial',
+    name: 'Deco Serif Editorial',
+    tagline: 'display serif on bone, ruled like a contents page',
+    what: 'A warm off-white ground carrying an oversized high-contrast display serif — deco or didone, always uppercase, always broken into a short stack of ragged lines. Everything under it is organised by hairline rules and small letterspaced caps, the way a magazine contents page is.',
+    means: 'Signals expense through restraint. There is no accent colour, no button that shouts, no card with a shadow — the only thing spending money is the type, which is exactly the argument luxury hospitality, fashion and architecture want to make. Reach for it when the product must feel curated rather than sold.',
+    vocabulary: [
+      ['didone', 'high-contrast serif with flat hairline serifs and vertical stress'],
+      ['stroke contrast', 'the ratio between a letterform\'s thickest and thinnest stroke'],
+      ['optical size', 'a cut drawn for large display use — finer hairlines, tighter fit'],
+      ['deco ligature', 'the joined or geometricised letter pairs typical of Art Deco display cuts'],
+      ['eyebrow', 'small letterspaced caps label sitting above a headline'],
+      ['leader rule', 'the rule running from a label across to its value in a contents list'],
+      ['ragged stack', 'a headline broken into short uneven lines rather than justified'],
+      ['bone stock', 'warm off-white ground, never pure white'],
+    ],
+  },
 ];
 
 const ENTRIES = [
@@ -184,5 +201,35 @@ const ENTRIES = [
     keywords: ['alternating wine and marigold bands', 'scalloped wave band edges', 'irregular photo collage per section', 'centred uppercase section headlines', 'rotated rosette seal badges', 'deep indigo footer block'],
     imagePrompt: '[SUBJECT: a set of luxury resort interiors and grounds — arched stone lobbies, a courtyard pool, a terrace table, a lantern-lit spa] photographed in warm golden light with deeply saturated colour, honey limestone and terracotta against turquoise water and deep green planting, rich open shadows and no crushed blacks, glossy travel-brochure grade with high clarity and no grain, each frame composed tightly on its subject with the architecture filling the crop, no haze, no overcast light, no muted or desaturated treatment',
     brief: 'Build a full marketing site for a luxury resort as a vertical stack of eight full-bleed bands that alternate ground colour — wine-magenta (#8B1C5D), marigold (#F5C518), wine, marigold — closing on a deep indigo footer (#3B1B6B), all inside a near-black plum frame (#2E0A1F). Every band boundary is a scalloped wave edge cut as an SVG path, never a straight rule, and no band may share its ground with the one above it. Each band opens with a centred uppercase headline in a heavy geometric sans at 40px ending in a full stop, a two-line centred subhead at 14px, and then a collage: four to seven photographs at deliberately unequal sizes, rounded 10px, overlapping by 20–40px, each captioned in 10px uppercase at its lower-left, and the collage shape must differ band to band — a stepped row here, a staggered mosaic there, a three-card feature elsewhere. Buttons are chartreuse (#D6F04B) or marigold pills with a trailing arrow and a hard 5px offset shadow at zero blur. Scatter orange (#F0602A) four-point sparkles across every band, and pin a rotated circular rosette seal badge into two of them. The testimonial band drops the collage for a single wide photograph with a chartreuse quote card and a script signature laid over it. Footer is a four-column link grid in indigo with circular social buttons. Nothing on this page is grey, no shadow is ever blurred, and every section is centred — there is no left-aligned text anywhere.',
+  },
+
+  // ── Illustrated Storybook ─────────────────────────────────────────
+  {
+    id: 'orely-resorts',
+    group: 'illustrated-storybook',
+    image: 'images/orely-resorts.webp',
+    source: 'https://dribbble.com/shots/26890504-Orely-Resorts-What-Set-Us-Apart-Inner-Page',
+    parts: ['navbar', 'hero'],
+    title: 'Orely Resorts',
+    formula: 'coastal resort × flat vector illustration',
+    blurb: 'The whole hero is one drawn scene, and the headline is dropped into the empty sky the illustration deliberately left for it.',
+    keywords: ['full-bleed flat vector coastal scene', 'pale sky-blue ground with no gradient shading', 'high-contrast deco serif headline in near-black', 'centred uppercase headline sitting in the sky gap', 'teal, terracotta and blush palette', 'black circular hamburger against the drawing'],
+    imagePrompt: '[SUBJECT: a cliffside Mediterranean resort seen from a beach terrace, with palm trees, a parasol, two wooden loungers and a yacht on the water] drawn as flat vector illustration with clean closed shapes and no outlines, colour held to pale sky-blue, deep teal and sage foliage, turquoise water, warm sand, cream stucco with terracotta roofs and blush cushions, shading done only as two or three flat tonal steps per shape with a faint paper grain over the fills, no photographic light and no soft gradients except a single barely-visible sky wash, wide horizontal composition with the scenery pushed to the left and right thirds and a large empty band of sky held open across the middle for type, no perspective distortion, no drop shadows, no outlines',
+    brief: 'Build the hero for a boutique resort. The illustration is the page: one full-bleed flat vector scene bleeding to all four edges, with the composition deliberately parted in the centre so a large area of pale sky (#DCEAF2) stays empty. The headline sits in that gap — a high-contrast deco serif, uppercase, near-black (#232B2A), three centred lines at 92px with 0.88 leading and 0.04em tracking, no subhead and no button under it. Nav is a single 56px bar over the illustration with no background plate and no border: a drawn wordmark left, one underlined 13px uppercase link right, and a 56px solid black circle holding a three-bar white menu icon at the far right. At the bottom centre, 11px uppercase letterspaced text reading as a scroll cue, no arrow glyph. Palette is fixed at seven colours — sky #DCEAF2, water #7FC0CE, deep foliage #1E7A6E, terracotta #E8552F, sand #E3D3B8, blush #F6D4D6, ink #232B2A — and nothing on the page may use a colour outside it, including hover states. On scroll, parallax the foreground palm and loungers at 1.15× against the cliff at 0.9× so the scene opens; nothing else moves. No shadows anywhere, no rounded cards, no photographic imagery, and never place a solid panel over the illustration.',
+  },
+
+  // ── Deco Serif Editorial ──────────────────────────────────────────
+  {
+    id: 'orely-what-sets-us-apart',
+    group: 'deco-serif-editorial',
+    image: 'images/orely-what-sets-us-apart.webp',
+    source: 'https://dribbble.com/shots/26890504-Orely-Resorts-What-Set-Us-Apart-Inner-Page',
+    parts: ['full page'],
+    title: 'Orely Resorts — inner page',
+    formula: 'resort hotel × deco serif editorial',
+    blurb: 'The illustrated hero hands off to a bone-paper contents page: every section is an eyebrow, a ruled row and a stacked serif headline.',
+    keywords: ['warm bone paper ground', 'oversized deco serif uppercase headline in a ragged stack', 'letterspaced caps eyebrow trailed by a short rule', 'numbered 01/ 02/ 03 index rows with hairline leaders and circular line icons', 'unframed photo plates at unequal sizes, no captions or borders', 'pale-to-deep-navy gradient section under white type'],
+    imagePrompt: '[SUBJECT: a clifftop resort — an open-air stone bar, a terrace table set for dinner, palms over a pool deck, a whitewashed villa on rock] photographed in soft overcast coastal daylight with no direct sun and no hard shadows, cool restrained grade with muted teal water, bleached stone, pale sky and desaturated green planting, gentle contrast with lifted blacks and no crushed shadow, natural editorial travel photography with fine grain and no HDR clarity, straight-on eye-level framing with the subject filling the crop and the horizon high, no golden-hour warmth, no saturated blues, no vignette, no lens flare',
+    brief: 'Build the interior pages of a luxury resort site as a single scrolling document on a warm bone ground (#EDEAE3) with slate ink (#1B2A33). There is no accent colour anywhere — the only colour on the page comes from the photographs and from one full-bleed section whose ground ramps from pale sky (#CFE0EA) to deep navy (#12395C) with all its type reversed to white. Type is a two-role system: a high-contrast deco display serif, uppercase, for every headline, set at 64px with 0.9 leading and broken by hand into three or four short ragged lines that never justify; and the same serif at 20px in sentence case for values and standfirsts. The only sans is an 11px uppercase eyebrow at 0.18em tracking, sitting above each headline and trailed by a 40px hairline rule. Sections are full-width with 160px of vertical padding and a 12-column grid where headlines take columns 1–6 and imagery takes 7–12. The signature component is the index list: numbered rows reading 01/ 02/ 03/ in the serif, each with a 44px circular hairline-outlined line-drawing icon, a 10px caps category label above the value, and a hairline rule spanning the full row width — the rules stagger left and right so no two rows start at the same x. Stats sit as a single row of 56px serif numerals separated by 1px vertical dividers. Photographs are placed as plain rectangles at deliberately unequal sizes, some bleeding off the edge, with no border, no radius, no caption box and no shadow. Nothing on this page is a card, no corner is rounded, no rule is thicker than 1px, and no element may use a colour outside bone, slate, white and the navy gradient.',
   },
 ];
