@@ -18,8 +18,12 @@ so an agent can pull it out afterwards:
 ./clip.sh havena
 ```
 
-Writes `images/havena.png`. Run it while that screenshot is still the last thing you
-copied, and check the result — the clipboard holds whatever was copied most recently.
+Writes `images/havena.webp` and prints the path. Run it while that screenshot is still
+the last thing you copied, and check the result — the clipboard holds whatever was copied
+most recently.
+
+Captures are capped at 2000px wide and encoded as webp, which turns a 3.6 MB retina
+screenshot into ~250 KB. Without `cwebp` on PATH it still downscales, just as a png.
 
 ## Adding a screenshot
 

@@ -149,6 +149,9 @@ and pasting does not clear it — grab it from the clipboard:
 ./clip.sh <id>
 ```
 
+It prints the path it wrote — normally `images/<id>.webp`, capped at 2000px wide.
+Use that exact path for `image`; don't assume the extension.
+
 **Then read the saved file back and look at it.** The clipboard holds whatever was
 copied *last*, which is not always the image in the conversation. If it isn't the
 design you are cataloguing, delete it and ask the user to re-copy — never file an
